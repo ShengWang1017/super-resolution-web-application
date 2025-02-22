@@ -40,3 +40,7 @@ config.properties
 SR_handler.py
 srcnn_handler.py
 srcnn_x4.pth
+
+# 包含敏感信息的配置文件
+**/application-dev.yml
+**/application-prod.yml

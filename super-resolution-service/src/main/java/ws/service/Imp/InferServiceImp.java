@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import utils.FileUpload;
+import com.ws.common.utils.FileUpload;
 import ws.service.InferService;
 
 import java.io.*;

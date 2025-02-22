@@ -1,0 +1,7 @@
+aliyun:
+  oss:
+    access-key-id: ${aliyun.oss.key-id:default_key_id}
+    access-key-secret: ${aliyun.oss.key-secret:default_key_secret}
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    bucket-name: ws1017-web-tlias
+    region: cn-beijing 
