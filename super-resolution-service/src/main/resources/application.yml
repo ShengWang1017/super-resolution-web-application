@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: super-resolution-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.93.185.177:8848
+
+torchserve:
+  url: http://47.93.185.177:8443/predictions/srcnn
+server:
+  port: 8080
