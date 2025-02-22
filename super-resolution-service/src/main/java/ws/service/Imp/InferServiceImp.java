@@ -21,6 +21,9 @@ public class InferServiceImp implements InferService {
     @Value("${torchserve.url}")
     private String torchserveUrl;
 
+    @Autowired
+    private FileUpload fileUpload;
+
     @Override
     public String infer(MultipartFile image) {
         try {
@@ -58,7 +61,7 @@ public class InferServiceImp implements InferService {
                     System.out.println("图片已保存到: " + outputFilePath);
                     
                     // 上传到阿里云OSS并获取URL
-                    String imageUrl = FileUpload.uploadJPGFile(outputFile);
+                    String imageUrl = fileUpload.uploadJPGFile(outputFile);
                     
                     // 清理临时文件
                     tempImage.delete();

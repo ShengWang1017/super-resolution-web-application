@@ -6,7 +6,6 @@ import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.ws.common.config.OSSConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +15,6 @@ import java.util.Random;
 /**
  * 用于将超分辨率后的图片上传
  */
-@Component
 public class FileUpload {
     
     @Autowired
