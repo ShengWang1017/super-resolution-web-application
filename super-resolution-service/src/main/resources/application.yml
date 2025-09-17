@@ -5,6 +5,16 @@ spring:
     nacos:
       discovery:
         server-addr: 47.93.185.177:8848
+        connect-timeout: 5000 # 连接超时时间，单位为毫秒
+        read-timeout: 5000    # 读取超时时间，单位为毫秒
+        enabled: true  # 如果不需要服务发现，可以禁用
+      config:
+        import-check:
+          enabled: false  # 禁用配置导入检查
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
 torchserve:
   url: http://47.93.185.177:8443/predictions/srcnn

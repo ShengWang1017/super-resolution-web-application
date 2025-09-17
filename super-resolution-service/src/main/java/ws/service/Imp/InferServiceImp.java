@@ -34,22 +34,28 @@ public class InferServiceImp implements InferService {
     }
 
     public String sendPostRequest(MultipartFile image) throws IOException {
-        // 创建临时文件
-        File tempImage = File.createTempFile("upload-", image.getOriginalFilename());
-        image.transferTo(tempImage);
+        File tempImage = null;
+        File outputFile = null;
+        try {
+            // 创建临时文件
+            tempImage = File.createTempFile("upload-", image.getOriginalFilename());
+            image.transferTo(tempImage);
 
-        // 构造RequestBody
-        RequestBody requestBody = RequestBody.create(tempImage, MediaType.parse("image/jpeg"));
-        Request request = new Request.Builder()
-                .url(torchserveUrl)
-                .post(requestBody)
-                .build();
+            // 构造RequestBody
+            RequestBody requestBody = RequestBody.create(tempImage, MediaType.parse("image/jpeg"));
+            Request request = new Request.Builder()
+                    .url(torchserveUrl)
+                    .post(requestBody)
+                    .build();
 
-        // 发送请求并处理响应
-        try (Response response = okHttpClient.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                System.out.println("请求成功，开始保存图片...");
-                File outputFile = new File(outputFilePath);
+            // 发送请求并处理响应
+            try (Response response = okHttpClient.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    throw new RuntimeException("请求失败: " + response.code() + " " + response.message());
+                }
+
+                log.info("请求成功，开始保存图片...");
+                outputFile = new File("output_image.jpg");
                 
                 try (InputStream inputStream = response.body().byteStream();
                      FileOutputStream fileOutputStream = new FileOutputStream(outputFile)) {
@@ -58,22 +64,22 @@ public class InferServiceImp implements InferService {
                     while ((bytesRead = inputStream.read(buffer)) != -1) {
                         fileOutputStream.write(buffer, 0, bytesRead);
                     }
-                    System.out.println("图片已保存到: " + outputFilePath);
+                    log.info("图片已保存到: {}", outputFile.getAbsolutePath());
                     
-                    // 上传到阿里云OSS并获取URL
-                    String imageUrl = fileUpload.uploadJPGFile(outputFile);
-                    
-                    // 清理临时文件
-                    tempImage.delete();
-                    outputFile.delete();
-                    
-                    return imageUrl;
+                    return fileUpload.uploadJPGFile(outputFile);
                 }
-            } else {
-                throw new RuntimeException("获得响应失败：" + response.body().string());
             }
         } catch (Exception e) {
+            log.error("处理请求失败", e);
             throw new RuntimeException("处理请求失败: " + e.getMessage());
+        } finally {
+            // 清理临时文件
+            if (tempImage != null && tempImage.exists()) {
+                tempImage.delete();
+            }
+            if (outputFile != null && outputFile.exists()) {
+                outputFile.delete();
+            }
         }
     }
 }
